@@ -1,0 +1,117 @@
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+
+import '../../../../../core/presentation/controlled_view.dart';
+import '../../../../../core/presentation/sub_view.dart';
+import '../../../../shared/presentation/base_page.dart';
+import '../../../../shared/utils/asset_config.dart';
+import '../../../../shared/utils/build_context_ext.dart';
+import '../controllers/login_controller.dart';
+
+class LoginPageMobile extends ControlledView<LoginController, Object> {
+  LoginPageMobile({super.key, super.params});
+
+  @override
+  Widget build(BuildContext context) {
+    return BasePage(title: _Title(), body: _Body(), centerTitle: true);
+  }
+}
+
+class _Title extends StatelessWidget {
+  const _Title();
+
+  @override
+  Widget build(BuildContext context) {
+    return Text('Welcome back', style: context.textTheme.headlineLarge);
+  }
+}
+
+class _Body extends SubView<LoginController> {
+  @override
+  Widget buildView(BuildContext context, LoginController controller) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Center(
+            child: Text(
+              'Lets get you started.',
+              style: context.textTheme.headlineSmall,
+            ),
+          ),
+          SizedBox(height: screenHeight * 0.1),
+          TextFormField(
+            decoration: const InputDecoration(
+              labelText: 'Email',
+              hintText: 'Enter your email',
+            ),
+            onChanged: (_) {},
+          ),
+          TextFormField(
+            decoration: const InputDecoration(
+              labelText: 'Password',
+              hintText: 'Enter your password',
+            ),
+            onChanged: (_) {},
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: controller.login,
+            child: const Text('Login'),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(child: Divider(thickness: 1)),
+              const SizedBox(width: 8),
+              Text('Or', style: context.textTheme.headlineSmall),
+              const SizedBox(width: 8),
+              Expanded(child: Divider(thickness: 1)),
+            ],
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+            ),
+            onPressed: () {},
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(AssetConfig.googleLogo, width: 24, height: 24),
+                const SizedBox(width: 8),
+                const Text('Login with Google'),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          Center(
+            child: RichText(
+              text: TextSpan(
+                text: 'Don\'t have an account? ',
+                style: context.textTheme.bodyMedium,
+                children: [
+                  TextSpan(
+                    text: 'Sign up',
+                    style: context.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    recognizer:
+                        TapGestureRecognizer()
+                          ..onTap = () {
+                            // Handle sign up tap
+                          },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
