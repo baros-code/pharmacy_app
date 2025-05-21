@@ -1,6 +1,10 @@
 import 'dart:async';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'app/features/auth/presentation/cubit/auth_cubit.dart';
 import 'app/shared/utils/app_router.dart';
 import 'app/shared/utils/service_locator.dart';
 import 'app/shared/utils/theme/theme.dart';
@@ -26,18 +30,26 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      theme: TAppTheme.lightTheme,
-      darkTheme: TAppTheme.darkTheme,
-      routerConfig: AppRouter.router,
-      title: 'Books App',
+    return MultiBlocProvider(
+      providers: _getCubitProviders(),
+      child: MaterialApp.router(
+        theme: TAppTheme.lightTheme,
+        darkTheme: TAppTheme.darkTheme,
+        routerConfig: AppRouter.router,
+        title: 'Pharmacy App',
+      ),
     );
+  }
+
+  List<BlocProvider> _getCubitProviders() {
+    return [BlocProvider<AuthCubit>(create: (context) => locator<AuthCubit>())];
   }
 }
 
 Future<void> _initializeDependencies() async {
   WidgetsFlutterBinding.ensureInitialized();
   ServiceLocator.initialize();
+  await Firebase.initializeApp();
 }
 
 void _onFlutterError(FlutterErrorDetails details) {

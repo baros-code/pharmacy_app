@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "233576092123",
+    "project_id": "pharmacy-app-2a147",
+    "storage_bucket": "pharmacy-app-2a147.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:233576092123:android:9fde8e0879d1a8a8add7fe",
+        "android_client_info": {
+          "package_name": "com.example.pharmacy_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "233576092123-fpvg6unv5tm250rjbcch6jnqr42i8qi5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDm8sgLPra5WxzpsPwK4_fiHBZ4_S4eyr4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "233576092123-fpvg6unv5tm250rjbcch6jnqr42i8qi5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

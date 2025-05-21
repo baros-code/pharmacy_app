@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/pages/login_page.dart';
+import '../../features/auth/presentation/pages/sign_up_page.dart';
 import '../../features/pharmacy/presentation/pages/home_page.dart';
 import '../presentation/error_page.dart';
 import '../presentation/splash_page.dart';
@@ -23,14 +24,23 @@ class AppRouter {
           return _buildPage(page: SplashPage(), state: state);
         },
       ),
+
       GoRoute(
         path: RouteConfig.loginRoute.path,
         name: RouteConfig.loginRoute.name,
         pageBuilder: (context, state) {
           return _buildPage(page: LoginPage(), state: state);
         },
+        routes: [
+          GoRoute(
+            path: RouteConfig.signUpRoute.path,
+            name: RouteConfig.signUpRoute.name,
+            pageBuilder: (context, state) {
+              return _buildPage(page: SignUpPage(), state: state);
+            },
+          ),
+        ],
       ),
-
       GoRoute(
         path: RouteConfig.homeRoute.path,
         name: RouteConfig.homeRoute.name,
@@ -69,6 +79,7 @@ class AppRouter {
 enum RouteConfig {
   splashRoute('/splash'),
   loginRoute('/login'),
+  signUpRoute('/signup'),
   homeRoute('/home');
 
   const RouteConfig(this.path);

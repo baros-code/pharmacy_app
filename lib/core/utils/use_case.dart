@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+
 import 'logger.dart';
+import 'result.dart';
 
 /// Base class for standard use cases.
 ///
@@ -9,12 +11,13 @@ import 'logger.dart';
 ///
 /// If any of [TInput], [TOutput] or [TEvent] is not needed,
 /// void can be passed as a generic type to be ignored.
-abstract class UseCase<TInput, TOutput, TEvent> extends _UseCaseBase<TEvent> {
+abstract class UseCase<TInput, TOutput extends Object, TEvent>
+    extends _UseCaseBase<TEvent> {
   UseCase(super.logger);
 
   /// Executes use case with the given [params] and
   /// returns a FutureOr of a [TOutput] instance.
-  FutureOr<TOutput?> call({TInput? params});
+  FutureOr<Result<TOutput, Failure>> call({TInput? params});
 }
 
 /// Private base class for use cases.

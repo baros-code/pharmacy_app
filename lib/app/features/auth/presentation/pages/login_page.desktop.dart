@@ -6,6 +6,7 @@ import '../../../../../core/presentation/sub_view.dart';
 import '../../../../shared/presentation/base_page.dart';
 import '../../../../shared/utils/asset_config.dart';
 import '../../../../shared/utils/build_context_ext.dart';
+import '../../../../shared/widgets/custom_text_form_field.dart';
 import '../controllers/login_controller.dart';
 
 class LoginPageDesktop extends ControlledView<LoginController, Object> {
@@ -46,19 +47,17 @@ class _Body extends SubView<LoginController> {
               ),
             ),
             SizedBox(height: screenHeight * 0.1),
-            TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                hintText: 'Enter your email',
-              ),
-              onChanged: (_) {},
+            CustomTextFormField(
+              labelText: 'Email',
+              hintText: 'Enter your email',
+              onChanged: controller.setEmail,
             ),
-            TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Password',
-                hintText: 'Enter your password',
-              ),
-              onChanged: (_) {},
+            const SizedBox(height: 16),
+            CustomTextFormField(
+              obscureText: true,
+              labelText: 'Password',
+              hintText: 'Enter your password',
+              onChanged: controller.setPassword,
             ),
             const SizedBox(height: 16),
             ElevatedButton(
