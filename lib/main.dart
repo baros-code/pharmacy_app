@@ -9,6 +9,7 @@ import 'app/shared/utils/app_router.dart';
 import 'app/shared/utils/service_locator.dart';
 import 'app/shared/utils/theme/theme.dart';
 import 'core/utils/logger.dart';
+import 'firebase_options.dart';
 
 void main() {
   runZonedGuarded(
@@ -49,7 +50,7 @@ class MainApp extends StatelessWidget {
 Future<void> _initializeDependencies() async {
   WidgetsFlutterBinding.ensureInitialized();
   ServiceLocator.initialize();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 
 void _onFlutterError(FlutterErrorDetails details) {

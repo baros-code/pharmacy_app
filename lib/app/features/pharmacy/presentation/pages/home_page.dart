@@ -1,27 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
-import '../../../../../core/presentation/controlled_view.dart';
-import '../../../../shared/presentation/base_page.dart';
-import '../../../../shared/utils/build_context_ext.dart';
-import '../controllers/home_controller.dart';
+import 'home_page.desktop.dart';
+import 'home_page.mobile.dart';
 
-class HomePage extends ControlledView<HomeController, Object> {
-  HomePage({super.key, super.params});
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BasePage(
-      title: _Title(),
-      body: const Center(child: Text('Home Page')),
+    return ScreenTypeLayout.builder(
+      mobile: (_) => HomePageMobile(),
+      desktop: (_) => HomePageDesktop(),
     );
-  }
-}
-
-class _Title extends StatelessWidget {
-  const _Title();
-
-  @override
-  Widget build(BuildContext context) {
-    return Text('Pharmacy', style: context.textTheme.headlineLarge);
   }
 }

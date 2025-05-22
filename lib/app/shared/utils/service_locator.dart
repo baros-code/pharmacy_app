@@ -7,6 +7,7 @@ import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/data/services/auth_service.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/domain/use_cases/login.dart';
+import '../../features/auth/domain/use_cases/login_with_google.dart';
 import '../../features/auth/domain/use_cases/sign_up.dart';
 import '../../features/auth/presentation/controllers/login_controller.dart';
 import '../../features/auth/presentation/controllers/sign_up_controller.dart';
@@ -35,6 +36,7 @@ abstract class ServiceLocator {
     // Register use cases
     locator.registerLazySingleton(() => SignUp(locator(), locator()));
     locator.registerLazySingleton(() => Login(locator(), locator()));
+    locator.registerLazySingleton(() => LoginWithGoogle(locator(), locator()));
 
     // Register controllers
     locator
@@ -44,6 +46,6 @@ abstract class ServiceLocator {
       ..registerFactory(() => HomeController(locator(), locator()));
 
     // Register cubits
-    locator.registerFactory(() => AuthCubit(locator(), locator()));
+    locator.registerFactory(() => AuthCubit(locator(), locator(), locator()));
   }
 }

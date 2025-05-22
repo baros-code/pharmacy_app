@@ -1,6 +1,9 @@
 // ignore_for_file: require_trailing_commas
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../../../core/utils/result.dart';
 import '../models/user_model.dart';
@@ -17,6 +20,8 @@ abstract class AuthService {
     String email,
     String password,
   );
+
+  Future<Result<UserModel, Failure>> signInWithGoogle();
 
   /// Signs out the current user.
   Future<void> signOut();
@@ -73,6 +78,58 @@ class AuthServiceImpl implements AuthService {
     } on FirebaseAuthException catch (e) {
       final authCode = LoginExceptionCode.fromCode(e.code);
       return Result.failure(Failure(message: authCode.message));
+    }
+  }
+
+  @override
+  Future<Result<UserModel, Failure>> signInWithGoogle() async {
+    UserCredential? userCredential;
+    try {
+      if (kIsWeb) {
+        final authProvider = GoogleAuthProvider();
+        userCredential = await FirebaseAuth.instance.signInWithPopup(
+          authProvider,
+        );
+      } else {
+        // Trigger Google Sign-In flow
+        final googleUser = await GoogleSignIn().signIn();
+
+        if (googleUser == null) {
+          throw Exception('Google sign-in aborted');
+        }
+
+        // Obtain the auth details from the request
+        final googleAuth = await googleUser.authentication;
+
+        // Create a new credential
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+        userCredential = await FirebaseAuth.instance.signInWithCredential(
+          credential,
+        );
+      }
+      return Result.success(
+        value: UserModel(
+          id: userCredential.user?.uid,
+          name: userCredential.user?.displayName,
+          email: userCredential.user?.email,
+        ),
+      );
+    } catch (e) {
+      if (e is PlatformException) {
+        if (e.code == 'sign_in_failed') {
+          return Result.failure(
+            Failure(
+              message: '''Google sign-in failed. Please try again later!''',
+            ),
+          );
+        }
+        return Result.failure(Failure(message: e.code));
+      } else {
+        return Result.failure(Failure(message: 'An unknown error occurred.'));
+      }
     }
   }
 

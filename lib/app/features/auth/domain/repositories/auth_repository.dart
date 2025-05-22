@@ -12,6 +12,8 @@ abstract class AuthRepository {
     String password,
   );
 
+  Future<Result<User, Failure>> signInWithGoogle();
+
   Future<Result> signOut();
 
   Result<User, Failure> getCurrentUser();

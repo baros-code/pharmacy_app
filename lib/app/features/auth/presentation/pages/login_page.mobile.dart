@@ -76,7 +76,7 @@ class _Body extends SubView<LoginController> {
               backgroundColor: Colors.white,
               foregroundColor: Colors.black,
             ),
-            onPressed: () {},
+            onPressed: controller.loginWithGoogle,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

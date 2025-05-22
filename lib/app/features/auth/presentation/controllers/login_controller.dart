@@ -7,6 +7,7 @@ import '../../../../../core/presentation/controller.dart';
 import '../../../../shared/utils/app_router.dart';
 import '../cubit/auth_cubit.dart';
 
+// TODO(Baran): Implement bypass login when user already logged in.
 class LoginController extends Controller<Object> {
   LoginController(super.logger, super.popupManager);
 
@@ -28,6 +29,16 @@ class LoginController extends Controller<Object> {
       areFieldsValid = areValid;
     });
   }
+
+  // Example usage:
+  // addMedication(
+  //   name: 'Ibuprofen',
+  //   strength: '200mg',
+  //   dosageForm: 'Tablet',
+  //   description: 'Pain reliever and anti-inflammatory.',
+  //   manufacturer: 'Example Pharma',
+  //   price: 5.99,
+  // );
 
   void handleAuthStates(AuthState state) {
     if (state is LoginLoading) {
@@ -62,6 +73,10 @@ class LoginController extends Controller<Object> {
         'Please fill all fields correctly.',
       );
     }
+  }
+
+  void loginWithGoogle() {
+    _authCubit.loginWithGoogle();
   }
 
   void goToSignUp() {
