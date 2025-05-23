@@ -3,13 +3,14 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'app/features/auth/presentation/cubit/auth_cubit.dart';
 import 'app/shared/utils/app_router.dart';
+import 'app/shared/utils/firebase_config.dart';
 import 'app/shared/utils/service_locator.dart';
 import 'app/shared/utils/theme/theme.dart';
 import 'core/utils/logger.dart';
-import 'firebase_options.dart';
 
 void main() {
   runZonedGuarded(
@@ -49,8 +50,10 @@ class MainApp extends StatelessWidget {
 
 Future<void> _initializeDependencies() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Load environment variables.
+  await dotenv.load();
   ServiceLocator.initialize();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(options: FirebaseConfig.currentPlatform);
 }
 
 void _onFlutterError(FlutterErrorDetails details) {

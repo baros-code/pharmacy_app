@@ -248,3 +248,6 @@ fastlane/test_output
 iOSInjectionProject/
 .DS_Store
 devtools_options.yaml
+
+# Firebase related
+lib/firebase_options.dart
