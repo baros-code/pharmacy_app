@@ -12,7 +12,12 @@ import '../../features/auth/domain/use_cases/sign_up.dart';
 import '../../features/auth/presentation/controllers/login_controller.dart';
 import '../../features/auth/presentation/controllers/sign_up_controller.dart';
 import '../../features/auth/presentation/cubit/auth_cubit.dart';
+import '../../features/pharmacy/data/repositories/pharmacy_repository_impl.dart';
+import '../../features/pharmacy/data/services/pharmacy_remote_service.dart';
+import '../../features/pharmacy/domain/repositories/pharmacy_repository.dart';
+import '../../features/pharmacy/domain/use_cases/fetch_medications.dart';
 import '../../features/pharmacy/presentation/controllers/home_controller.dart';
+import '../../features/pharmacy/presentation/cubit/pharmacy_cubit.dart';
 import '../controllers/splash_controller.dart';
 
 final locator = GetIt.instance;
@@ -27,16 +32,23 @@ abstract class ServiceLocator {
 
     // Register services
     locator.registerLazySingleton<AuthService>(AuthServiceImpl.new);
+    locator.registerLazySingleton<PharmacyRemoteService>(
+      PharmacyRemoteServiceImpl.new,
+    );
 
     // Register repositories
     locator.registerLazySingleton<AuthRepository>(
       () => AuthRepositoryImpl(locator()),
+    );
+    locator.registerLazySingleton<PharmacyRepository>(
+      () => PharmacyRepositoryImpl(locator()),
     );
 
     // Register use cases
     locator.registerLazySingleton(() => SignUp(locator(), locator()));
     locator.registerLazySingleton(() => Login(locator(), locator()));
     locator.registerLazySingleton(() => LoginWithGoogle(locator(), locator()));
+    locator.registerLazySingleton(() => FetchMedications(locator(), locator()));
 
     // Register controllers
     locator
@@ -47,5 +59,6 @@ abstract class ServiceLocator {
 
     // Register cubits
     locator.registerFactory(() => AuthCubit(locator(), locator(), locator()));
+    locator.registerFactory(() => PharmacyCubit(locator()));
   }
 }

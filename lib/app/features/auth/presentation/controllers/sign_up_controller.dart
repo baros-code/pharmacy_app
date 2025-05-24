@@ -43,6 +43,10 @@ class SignUpController extends Controller<Object> {
       popupManager.hideProgress(context);
     }
     if (state is SignUpSuccess) {
+      popupManager.showToastMessage(
+        context,
+        'Sign up successful! Redirecting...',
+      );
       context.goNamed(RouteConfig.homeRoute.name);
       popupManager.hideProgress(context);
     }

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/sign_up_page.dart';
+import '../../features/pharmacy/presentation/cubit/pharmacy_cubit.dart';
 import '../../features/pharmacy/presentation/pages/home_page.dart';
 import '../presentation/error_page.dart';
 import '../presentation/splash_page.dart';
+import 'service_locator.dart';
 
 class AppRouter {
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -45,7 +48,13 @@ class AppRouter {
         path: RouteConfig.homeRoute.path,
         name: RouteConfig.homeRoute.name,
         pageBuilder: (context, state) {
-          return _buildPage(page: HomePage(), state: state);
+          return _buildPage(
+            page: BlocProvider(
+              create: (context) => locator<PharmacyCubit>(),
+              child: HomePage(),
+            ),
+            state: state,
+          );
         },
       ),
     ],

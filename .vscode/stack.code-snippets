@@ -74,7 +74,7 @@
             "\t${1:}(this._${7:}, super.logger);\n",
             "final ${5:TRepository} _${6:};\n",
             "\t@override",
-            "\tFuture<Result<${3:Object}, Failure>> execute({void params}) {",
+            "\tFuture<Result<${3:Object}, Failure>> call({void params}) {",
             "\t\treturn ${8:}",
             "\t}",
             "}\n"
