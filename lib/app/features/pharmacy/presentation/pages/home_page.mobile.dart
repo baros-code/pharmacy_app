@@ -5,7 +5,7 @@ import '../../../../../core/presentation/controlled_view.dart';
 import '../../../../../core/presentation/custom_card.dart';
 import '../../../../../core/presentation/sub_view.dart';
 import '../../../../../core/utils/string_ext.dart';
-import '../../../../shared/presentation/base_page.dart';
+import '../../../../shared/presentation/pages/base_page.dart';
 import '../../../../shared/utils/build_context_ext.dart';
 import '../../../../shared/widgets/search_view.dart';
 import '../../domain/entities/medication.dart';
@@ -49,7 +49,8 @@ class _Body extends SubView<HomeController> {
           enableShadows: true,
           searchBarHintText: 'Search for medications',
           itemPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          items: medications.map(_createSearchItem).toList(),
+          items:
+              medications.map((e) => _createSearchItem(e, controller)).toList(),
           toggleItems:
               controller.categories
                   .map(
@@ -58,7 +59,7 @@ class _Body extends SubView<HomeController> {
                       itemsOnSelection:
                           medications
                               .where((e1) => e1.category == category)
-                              .map(_createSearchItem)
+                              .map((e2) => _createSearchItem(e2, controller))
                               .toList(),
                     ),
                   )
@@ -69,9 +70,13 @@ class _Body extends SubView<HomeController> {
     );
   }
 
-  SearchItem _createSearchItem(Medication medication) {
+  SearchItem _createSearchItem(
+    Medication medication,
+    HomeController controller,
+  ) {
     return SearchItem(
       widget: CustomCard(
+        onTap: () => controller.goToMedicationDetails(medication),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -30,16 +30,6 @@ class LoginController extends Controller<Object> {
     });
   }
 
-  // Example usage:
-  // addMedication(
-  //   name: 'Ibuprofen',
-  //   strength: '200mg',
-  //   dosageForm: 'Tablet',
-  //   description: 'Pain reliever and anti-inflammatory.',
-  //   manufacturer: 'Example Pharma',
-  //   price: 5.99,
-  // );
-
   void handleAuthStates(AuthState state) {
     if (state is LoginLoading) {
       popupManager.showProgress(context);

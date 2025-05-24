@@ -25,6 +25,20 @@ class Medication extends Equatable {
   final List<String> sideEffects;
   final String category;
 
+  String get priceLabel {
+    if (price == null) {
+      return 'Price not available';
+    }
+    return '\$${price!.toStringAsFixed(2)}';
+  }
+
+  String get sideEffectsLabel {
+    if (sideEffects.isEmpty) {
+      return 'No known side effects';
+    }
+    return sideEffects.join(', ');
+  }
+
   @override
   List<Object?> get props => [
     id,

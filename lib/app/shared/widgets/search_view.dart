@@ -39,8 +39,6 @@ class _SearchViewState extends State<SearchView> {
   void initState() {
     super.initState();
     _items = widget.items;
-    // Do the initial search with an empty string
-    _searchInItems(_currentSearchText);
   }
 
   @override
@@ -71,6 +69,14 @@ class _SearchViewState extends State<SearchView> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               SearchBar(
+                backgroundColor: WidgetStateProperty.all(
+                  Theme.of(context).primaryColorLight,
+                ),
+                hintStyle: WidgetStateProperty.all(
+                  Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).disabledColor,
+                  ),
+                ),
                 hintText: widget.searchBarHintText,
                 onChanged: _searchInItems,
                 onSubmitted: _searchInItems,

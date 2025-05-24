@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/presentation/controlled_view.dart';
 import '../../../../../core/presentation/sub_view.dart';
-import '../../../../shared/presentation/base_page.dart';
+import '../../../../shared/presentation/pages/base_page.dart';
 import '../../../../shared/utils/build_context_ext.dart';
 import '../../../../shared/widgets/custom_text_form_field.dart';
 import '../controllers/sign_up_controller.dart';

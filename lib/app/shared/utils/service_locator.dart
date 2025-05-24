@@ -16,7 +16,9 @@ import '../../features/pharmacy/data/repositories/pharmacy_repository_impl.dart'
 import '../../features/pharmacy/data/services/pharmacy_remote_service.dart';
 import '../../features/pharmacy/domain/repositories/pharmacy_repository.dart';
 import '../../features/pharmacy/domain/use_cases/fetch_medications.dart';
+import '../../features/pharmacy/presentation/controllers/create_prescriptions_controller.dart';
 import '../../features/pharmacy/presentation/controllers/home_controller.dart';
+import '../../features/pharmacy/presentation/controllers/prescriptions_controller.dart';
 import '../../features/pharmacy/presentation/cubit/pharmacy_cubit.dart';
 import '../controllers/splash_controller.dart';
 
@@ -55,7 +57,11 @@ abstract class ServiceLocator {
       ..registerFactory(() => SplashController(locator(), locator()))
       ..registerFactory(() => SignUpController(locator(), locator()))
       ..registerFactory(() => LoginController(locator(), locator()))
-      ..registerFactory(() => HomeController(locator(), locator()));
+      ..registerFactory(() => HomeController(locator(), locator()))
+      ..registerFactory(() => PrescriptionsController(locator(), locator()))
+      ..registerFactory(
+        () => CreatePrescriptionsController(locator(), locator()),
+      );
 
     // Register cubits
     locator.registerFactory(() => AuthCubit(locator(), locator(), locator()));
