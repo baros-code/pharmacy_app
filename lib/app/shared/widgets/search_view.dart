@@ -62,7 +62,7 @@ class _SearchViewState extends State<SearchView> {
                   )
                   : EdgeInsets.zero,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               SearchBar(
                 hintText: widget.searchBarHintText,
@@ -285,7 +285,9 @@ class _ToggleButton extends StatelessWidget {
                 ? Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).primaryColorLight,
                 )
-                : Theme.of(context).textTheme.bodyMedium,
+                : Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).primaryColorDark,
+                ),
       ),
     ).bordered(
       radius: BorderRadius.all(Radius.circular(16)),
