@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../../core/utils/debouncer.dart';
 import '../../../core/utils/widget_ext.dart';
 
 class SearchView extends StatefulWidget {
@@ -31,10 +33,14 @@ class _SearchViewState extends State<SearchView> {
   String _currentSearchText = '';
   bool _isSearching = false;
 
+  final Debouncer _debouncer = Debouncer(milliseconds: 500);
+
   @override
   void initState() {
     super.initState();
     _items = widget.items;
+    // Do the initial search with an empty string
+    _searchInItems(_currentSearchText);
   }
 
   @override
@@ -90,7 +96,6 @@ class _SearchViewState extends State<SearchView> {
                       onSelectionCleared: () {
                         setState(() {
                           _items = widget.items;
-                          _searchInItems(_currentSearchText);
                         });
                       },
                     ),
@@ -120,22 +125,25 @@ class _SearchViewState extends State<SearchView> {
                                   : 24,
                         ),
                 itemPadding: widget.itemPadding,
+                onRefresh: () => _searchInItems(_currentSearchText),
               ),
             ),
       ],
     );
   }
 
-  void _searchInItems(String text) async {
+  Future<void> _searchInItems(String text) async {
     _currentSearchText = text;
     // Remote search
     if (widget.onSearchTextChanged != null) {
-      setState(() {
-        _isSearching = true;
-      });
-      await widget.onSearchTextChanged?.call(text);
-      setState(() {
-        _isSearching = false;
+      _debouncer.run(() async {
+        setState(() {
+          _isSearching = true;
+        });
+        await widget.onSearchTextChanged?.call(text);
+        setState(() {
+          _isSearching = false;
+        });
       });
     }
     // Local search
@@ -154,24 +162,50 @@ class _SearchViewState extends State<SearchView> {
 }
 
 class _ListView extends StatelessWidget {
-  const _ListView({required this.items, this.padding, this.itemPadding});
+  const _ListView({
+    required this.items,
+    this.padding,
+    this.itemPadding,
+    required this.onRefresh,
+  });
 
   final List<SearchItem> items;
-  final EdgeInsets? padding;
+  final EdgeInsetsGeometry? padding;
   final EdgeInsets? itemPadding;
+  final Future<void> Function() onRefresh;
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: items.length,
-      padding: padding,
-      itemBuilder: (context, index) {
-        final item = items[index];
-        return Padding(
-          padding: itemPadding ?? EdgeInsets.zero,
-          child: item.widget,
-        );
-      },
+    return CustomScrollView(
+      physics: const BouncingScrollPhysics(
+        parent: AlwaysScrollableScrollPhysics(),
+      ),
+      slivers: <Widget>[
+        CupertinoSliverRefreshControl(
+          onRefresh: onRefresh,
+          builder: (BuildContext context, _, _, _, _) {
+            return Center(
+              child: CupertinoActivityIndicator(
+                color: Theme.of(context).primaryColor,
+              ),
+            );
+          },
+        ),
+        if (padding != null) SliverPadding(padding: padding!),
+        SliverList(
+          delegate: SliverChildBuilderDelegate((
+            BuildContext context,
+            int index,
+          ) {
+            final item = items[index];
+            return Padding(
+              padding: itemPadding ?? EdgeInsets.zero,
+              child: item.widget,
+            );
+            // ignore: require_trailing_commas
+          }, childCount: items.length),
+        ),
+      ],
     );
   }
 }

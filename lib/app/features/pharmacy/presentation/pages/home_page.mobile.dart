@@ -45,10 +45,10 @@ class _Body extends SubView<HomeController> {
                 ? state.medications
                 : controller.medications;
         return SearchView(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
           enableShadows: true,
           searchBarHintText: 'Search for medications',
-          itemPadding: EdgeInsets.only(bottom: 16),
+          itemPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           items: medications.map(_createSearchItem).toList(),
           toggleItems:
               controller.categories
