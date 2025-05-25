@@ -19,6 +19,7 @@ class PrescriptionModel {
   final String? id;
   final String? patientId;
   final List<String>? medicationIds;
+  @JsonKey(name: 'instructions')
   final String? additionalNotes;
   final DateTime? issueDate;
   final List<String>? attachments;
@@ -44,7 +45,7 @@ class PrescriptionModel {
       patientId: patientId ?? AppConfig.defaultString,
       medicationIds: medicationIds ?? [],
       additionalNotes: additionalNotes ?? AppConfig.defaultString,
-      issueDate: issueDate,
+      issueDate: issueDate ?? DateTime(1),
       attachments: attachments ?? [],
     );
   }

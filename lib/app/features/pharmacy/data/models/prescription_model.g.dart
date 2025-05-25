@@ -14,7 +14,7 @@ PrescriptionModel _$PrescriptionModelFromJson(Map<String, dynamic> json) =>
           (json['medicationIds'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList(),
-      additionalNotes: json['additionalNotes'] as String?,
+      additionalNotes: json['instructions'] as String?,
       issueDate:
           json['issueDate'] == null
               ? null
@@ -30,7 +30,7 @@ Map<String, dynamic> _$PrescriptionModelToJson(PrescriptionModel instance) =>
       'id': instance.id,
       'patientId': instance.patientId,
       'medicationIds': instance.medicationIds,
-      'additionalNotes': instance.additionalNotes,
+      'instructions': instance.additionalNotes,
       'issueDate': instance.issueDate?.toIso8601String(),
       'attachments': instance.attachments,
     };

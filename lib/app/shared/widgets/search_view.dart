@@ -52,6 +52,12 @@ class _SearchViewState extends State<SearchView> {
   }
 
   @override
+  void dispose() {
+    _debouncer.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,6 +79,11 @@ class _SearchViewState extends State<SearchView> {
               SearchBar(
                 backgroundColor: WidgetStateProperty.all(
                   Theme.of(context).primaryColorLight,
+                ),
+                textStyle: WidgetStateProperty.all(
+                  Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).primaryColorDark,
+                  ),
                 ),
                 hintStyle: WidgetStateProperty.all(
                   Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -144,15 +155,21 @@ class _SearchViewState extends State<SearchView> {
     _currentSearchText = text;
     // Remote search
     if (widget.onSearchTextChanged != null) {
-      _debouncer.run(() async {
-        setState(() {
-          _isSearching = true;
+      if (mounted) {
+        _debouncer.run(() async {
+          if (mounted) {
+            setState(() {
+              _isSearching = true;
+            });
+          }
+          await widget.onSearchTextChanged?.call(text);
+          if (mounted) {
+            setState(() {
+              _isSearching = false;
+            });
+          }
         });
-        await widget.onSearchTextChanged?.call(text);
-        setState(() {
-          _isSearching = false;
-        });
-      });
+      }
     }
     // Local search
     else {

@@ -184,29 +184,43 @@ class _AttachmentPicker extends SubView<CreatePrescriptionsController> {
     BuildContext context,
     CreatePrescriptionsController controller,
   ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          '''You can also attach an image or photo to your prescription (optional):''',
-          style: Theme.of(context).textTheme.titleSmall,
-        ),
-        const SizedBox(height: 8),
-        CustomCard(
-          padding: const EdgeInsets.all(12),
-          enableShadows: false,
-          showBorder: true,
-          borderColor: Theme.of(context).primaryColor,
-          showArrowIcon: true,
-          onTap: () {},
-          child: Text(
-            'Attach image or photo',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).disabledColor,
+    return BlocBuilder<PharmacyCubit, PharmacyState>(
+      buildWhen: (previous, current) => current is AttachmentsSelected,
+      builder: (context, state) {
+        final attachments =
+            state is AttachmentsSelected
+                ? state.attachments
+                : controller.selectedAttachments;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              '''You can also attach an image or photo to your prescription (optional):''',
+              style: Theme.of(context).textTheme.titleSmall,
             ),
-          ),
-        ),
-      ],
+            const SizedBox(height: 8),
+            CustomCard(
+              padding: const EdgeInsets.all(12),
+              enableShadows: false,
+              showBorder: true,
+              borderColor: Theme.of(context).primaryColor,
+              showArrowIcon: true,
+              onTap: controller.openAttachmentsPicker,
+              child: Text(
+                attachments.isEmpty
+                    ? 'Attach image or photo'
+                    : '${attachments.length} attachment(s) selected',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color:
+                      attachments.isEmpty
+                          ? Theme.of(context).disabledColor
+                          : Theme.of(context).primaryColor,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

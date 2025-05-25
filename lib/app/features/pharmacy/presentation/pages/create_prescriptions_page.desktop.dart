@@ -202,7 +202,7 @@ class _AttachmentPicker extends SubView<CreatePrescriptionsController> {
           showBorder: true,
           borderColor: Theme.of(context).primaryColor,
           showArrowIcon: true,
-          onTap: () {},
+          onTap: controller.openAttachmentsPicker,
           child: Text(
             'Attach image or photo',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(

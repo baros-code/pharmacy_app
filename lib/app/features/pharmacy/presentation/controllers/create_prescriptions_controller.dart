@@ -1,9 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../core/presentation/controller.dart';
 import '../../../../shared/utils/app_router.dart';
+import '../../../../shared/utils/custom_image_picker.dart';
+import '../../../../shared/utils/permission_manager.dart';
 import '../../../../shared/widgets/selection_popup.dart';
 import '../../../../shared/widgets/selection_view.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
@@ -11,7 +14,15 @@ import '../../domain/entities/medication.dart';
 import '../cubit/pharmacy_cubit.dart';
 
 class CreatePrescriptionsController extends Controller<Object> {
-  CreatePrescriptionsController(super.logger, super.popupManager);
+  CreatePrescriptionsController(
+    super.logger,
+    super.popupManager,
+    this._imagePicker,
+    this._permissionManager,
+  );
+
+  final CustomImagePicker _imagePicker;
+  final PermissionManager _permissionManager;
 
   late AuthCubit _authCubit;
   late PharmacyCubit _pharmacyCubit;
@@ -21,6 +32,7 @@ class CreatePrescriptionsController extends Controller<Object> {
   List<Medication> selectedMedications = [];
   String? additionalNotes;
   DateTime? issueDate;
+  List<String> selectedAttachments = [];
 
   @override
   void onStart() {
@@ -79,7 +91,27 @@ class CreatePrescriptionsController extends Controller<Object> {
     additionalNotes = notes;
   }
 
-  void openAttachmentsPicker() {}
+  Future<void> openAttachmentsPicker() async {
+    if (kIsWeb) {
+      // TODO(Baran): Handle web attachments with filepicker package in future.
+      popupManager.showToastMessage(
+        context,
+        'For now you can only attach images or photos on mobile devices.',
+      );
+      return;
+    }
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return _ImagePickerDialog(
+          onCamera: () => _pickImage(PermissionType.camera),
+          onGallery: () => _pickImage(PermissionType.storageRead),
+          onSelectionComplete:
+              () => _pharmacyCubit.attachmentsSelected(selectedAttachments),
+        );
+      },
+    );
+  }
 
   void createPrescription() {
     if (selectedMedications.isEmpty || issueDate == null) {
@@ -94,6 +126,7 @@ class CreatePrescriptionsController extends Controller<Object> {
       medicationIds: selectedMedications.map((e) => e.id).toList(),
       instructions: additionalNotes ?? '',
       issueDate: issueDate!,
+      attachments: selectedAttachments,
     );
   }
 
@@ -118,5 +151,106 @@ class CreatePrescriptionsController extends Controller<Object> {
         .toList();
   }
 
+  Future<void> _pickImage(PermissionType type) async {
+    if (type == PermissionType.camera) {
+      final permission = await _permissionManager.checkPermission(type);
+      if (permission.state.isGranted) {
+        await _getImage(type);
+      } else {
+        if (context.mounted && !permission.isFirstPermanentlyDenied) {
+          _showPermissionRequiredDialog(type);
+        }
+      }
+    } else {
+      await _getImage(type);
+    }
+  }
+
+  Future<void> _getImage(PermissionType type) async {
+    final result =
+        type == PermissionType.storageRead
+            ? await _imagePicker.pickMultipleImages()
+            : await _imagePicker.takePhoto();
+    if (result.isSuccessful) {
+      if (result.value == null) {
+        return;
+      }
+      result.value is List<String>
+          ? selectedAttachments.addAll(result.value as List<String>)
+          : selectedAttachments.add(result.value as String);
+    } else {
+      if (context.mounted) {
+        return showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Error occurred while selecting image'),
+              content: Text(result.error?.message ?? 'Unknown error'),
+            );
+          },
+        );
+      }
+    }
+  }
+
+  Future<void> _showPermissionRequiredDialog(PermissionType type) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Permission required'),
+          content: Text(type.dialogText),
+          actions: [
+            TextButton(
+              onPressed: _permissionManager.openAppPermissionSettings,
+              child: Text('Open settings'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   // - Helpers
+}
+
+class _ImagePickerDialog extends StatelessWidget {
+  const _ImagePickerDialog({
+    required this.onGallery,
+    required this.onCamera,
+    this.onSelectionComplete,
+  });
+
+  final Future<void> Function() onGallery;
+  final Future<void> Function() onCamera;
+  final VoidCallback? onSelectionComplete;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Choose images or photos'),
+      content: const Text(
+        'You can attach images or photos to your prescription. '
+        'This is optional and can be done later.',
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: const Text('Choose from gallery'),
+          onPressed: () async {
+            Navigator.of(context).pop();
+            await onGallery();
+            onSelectionComplete?.call();
+          },
+        ),
+        TextButton(
+          child: const Text('Take photo'),
+          onPressed: () async {
+            Navigator.of(context).pop();
+            await onCamera();
+            onSelectionComplete?.call();
+          },
+        ),
+      ],
+    );
+  }
 }

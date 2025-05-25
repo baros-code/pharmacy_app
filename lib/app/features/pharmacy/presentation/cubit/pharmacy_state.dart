@@ -79,3 +79,12 @@ class IssueDateSelected extends PharmacyState {
   @override
   List<Object> get props => [issueDate];
 }
+
+class AttachmentsSelected extends PharmacyState {
+  const AttachmentsSelected(this.attachments);
+
+  final List<String> attachments;
+
+  @override
+  List<Object> get props => [attachments];
+}

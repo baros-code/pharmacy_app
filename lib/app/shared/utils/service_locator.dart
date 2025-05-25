@@ -23,6 +23,8 @@ import '../../features/pharmacy/presentation/controllers/home_controller.dart';
 import '../../features/pharmacy/presentation/controllers/prescriptions_controller.dart';
 import '../../features/pharmacy/presentation/cubit/pharmacy_cubit.dart';
 import '../controllers/splash_controller.dart';
+import 'custom_image_picker.dart';
+import 'permission_manager.dart';
 
 final locator = GetIt.instance;
 
@@ -39,6 +41,10 @@ abstract class ServiceLocator {
     locator.registerLazySingleton<PharmacyRemoteService>(
       PharmacyRemoteServiceImpl.new,
     );
+
+    // Register utilities
+    locator.registerLazySingleton<CustomImagePicker>(CustomImagePicker.new);
+    locator.registerLazySingleton<PermissionManager>(PermissionManager.new);
 
     // Register repositories
     locator.registerLazySingleton<AuthRepository>(
@@ -65,7 +71,12 @@ abstract class ServiceLocator {
       ..registerFactory(() => HomeController(locator(), locator()))
       ..registerFactory(() => PrescriptionsController(locator(), locator()))
       ..registerFactory(
-        () => CreatePrescriptionsController(locator(), locator()),
+        () => CreatePrescriptionsController(
+          locator(),
+          locator(),
+          locator(),
+          locator(),
+        ),
       );
 
     // Register cubits

@@ -16,18 +16,20 @@ class Prescription extends Equatable {
   final String patientId;
   final List<String> medicationIds;
   final String additionalNotes;
-  final DateTime? issueDate;
+  final DateTime issueDate;
   final List<String> attachments;
 
   String get medicationNames {
     return medicationIds
-        .map((e) => e.split('_').first.capitalizeFirstLetter())
-        .join(', ');
+        .map(
+          (e) =>
+              '${e.split('_')[0].capitalizeFirstLetter()} (${e.split('_')[1]} ${e.split('_')[2]})',
+        )
+        .join('\n');
   }
 
   String get formattedIssueDate {
-    if (issueDate == null) return 'No issue date';
-    return '${issueDate!.day}/${issueDate!.month}/${issueDate!.year}';
+    return '${issueDate.day}/${issueDate.month}/${issueDate.year}';
   }
 
   @override

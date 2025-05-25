@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/utils/string_ext.dart';
 import '../../../../shared/presentation/pages/base_page.dart';
+import '../../../../shared/presentation/widgets/label_and_value.dart';
 import '../../domain/entities/medication.dart';
 
 class MedicationDetailsPageMobile extends StatelessWidget {
@@ -41,38 +42,19 @@ class _Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 16,
         children: [
-          _DetailsLabel('Description', medication.description),
-          _DetailsLabel('Dosage', medication.dosageForm),
-          _DetailsLabel('Price', medication.priceLabel),
-          _DetailsLabel('Side effects', medication.sideEffectsLabel),
-          _DetailsLabel('Usage', medication.usage),
-          _DetailsLabel('Manufacturer', medication.manufacturer),
+          LabelAndValue('Description', medication.description),
+          LabelAndValue('Dosage', medication.dosageForm),
+          LabelAndValue('Price', medication.priceLabel),
+          LabelAndValue('Side effects', medication.sideEffectsLabel),
+          LabelAndValue('Usage', medication.usage),
+          LabelAndValue('Manufacturer', medication.manufacturer),
         ],
       ),
-    );
-  }
-}
-
-class _DetailsLabel extends StatelessWidget {
-  const _DetailsLabel(this.label, this.value);
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: Theme.of(context).textTheme.headlineSmall),
-        const SizedBox(height: 8),
-        Text(value, style: Theme.of(context).textTheme.titleSmall),
-      ],
     );
   }
 }

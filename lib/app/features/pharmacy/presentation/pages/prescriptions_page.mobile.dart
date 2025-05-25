@@ -81,7 +81,7 @@ class _Body extends SubView<PrescriptionsController> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Issued on: ${prescription.issueDate?.formatDefault()}',
+                      'Issued on: ${prescription.issueDate.formatDefault()}',
                     ),
                   ],
                 ),

@@ -50,7 +50,8 @@ class PharmacyCubit extends Cubit<PharmacyState> {
     final result = await _fetchPrescriptions(params: patientId);
     if (result.isSuccessful) {
       prescriptions = result.value!;
-      emit(PrescriptionsFetched(result.value!));
+      prescriptions.sort((a, b) => b.issueDate.compareTo(a.issueDate));
+      emit(PrescriptionsFetched(prescriptions));
       return;
     }
     emit(PrescriptionsFetchFailure(result.error!.message));
@@ -86,6 +87,10 @@ class PharmacyCubit extends Cubit<PharmacyState> {
 
   void issueDateSelected(DateTime issueDate) {
     emit(IssueDateSelected(issueDate));
+  }
+
+  void attachmentsSelected(List<String> attachments) {
+    emit(AttachmentsSelected(attachments));
   }
 
   // Helpers
