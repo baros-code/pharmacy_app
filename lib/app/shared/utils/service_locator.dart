@@ -15,7 +15,9 @@ import '../../features/auth/presentation/cubit/auth_cubit.dart';
 import '../../features/pharmacy/data/repositories/pharmacy_repository_impl.dart';
 import '../../features/pharmacy/data/services/pharmacy_remote_service.dart';
 import '../../features/pharmacy/domain/repositories/pharmacy_repository.dart';
+import '../../features/pharmacy/domain/use_cases/create_prescription.dart';
 import '../../features/pharmacy/domain/use_cases/fetch_medications.dart';
+import '../../features/pharmacy/domain/use_cases/fetch_prescriptions.dart';
 import '../../features/pharmacy/presentation/controllers/create_prescriptions_controller.dart';
 import '../../features/pharmacy/presentation/controllers/home_controller.dart';
 import '../../features/pharmacy/presentation/controllers/prescriptions_controller.dart';
@@ -47,10 +49,13 @@ abstract class ServiceLocator {
     );
 
     // Register use cases
-    locator.registerLazySingleton(() => SignUp(locator(), locator()));
-    locator.registerLazySingleton(() => Login(locator(), locator()));
-    locator.registerLazySingleton(() => LoginWithGoogle(locator(), locator()));
-    locator.registerLazySingleton(() => FetchMedications(locator(), locator()));
+    locator
+      ..registerLazySingleton(() => SignUp(locator(), locator()))
+      ..registerLazySingleton(() => Login(locator(), locator()))
+      ..registerLazySingleton(() => LoginWithGoogle(locator(), locator()))
+      ..registerLazySingleton(() => FetchMedications(locator(), locator()))
+      ..registerLazySingleton(() => CreatePrescription(locator(), locator()))
+      ..registerLazySingleton(() => FetchPrescriptions(locator(), locator()));
 
     // Register controllers
     locator
@@ -65,6 +70,8 @@ abstract class ServiceLocator {
 
     // Register cubits
     locator.registerFactory(() => AuthCubit(locator(), locator(), locator()));
-    locator.registerFactory(() => PharmacyCubit(locator()));
+    locator.registerFactory(
+      () => PharmacyCubit(locator(), locator(), locator()),
+    );
   }
 }

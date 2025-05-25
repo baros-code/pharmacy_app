@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'app/features/auth/presentation/cubit/auth_cubit.dart';
+import 'app/features/pharmacy/presentation/cubit/pharmacy_cubit.dart';
 import 'app/shared/utils/app_router.dart';
 import 'app/shared/utils/firebase_config.dart';
 import 'app/shared/utils/service_locator.dart';
@@ -44,7 +45,12 @@ class MainApp extends StatelessWidget {
   }
 
   List<BlocProvider> _getCubitProviders() {
-    return [BlocProvider<AuthCubit>(create: (context) => locator<AuthCubit>())];
+    return [
+      BlocProvider<AuthCubit>(create: (context) => locator<AuthCubit>()),
+      BlocProvider<PharmacyCubit>(
+        create: (context) => locator<PharmacyCubit>(),
+      ),
+    ];
   }
 }
 

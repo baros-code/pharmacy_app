@@ -5,13 +5,16 @@ class CustomTextFormField extends StatefulWidget {
     super.key,
     this.labelText,
     this.hintText,
+    this.enableValidation = false,
     this.obscureText = false,
     required this.onChanged,
   });
 
   final String? labelText;
   final String? hintText;
+  final bool enableValidation;
   final bool obscureText;
+
   final void Function(String) onChanged;
 
   @override
@@ -28,7 +31,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       child: TextFormField(
         validator: (value) {
-          if (value == null || value.isEmpty) {
+          if ((value == null || value.isEmpty) && widget.enableValidation) {
             return 'Please enter some text';
           }
           return null;
@@ -36,6 +39,9 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         decoration: InputDecoration(
           labelText: widget.labelText,
           hintText: widget.hintText,
+          labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).disabledColor,
+          ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide(color: Theme.of(context).primaryColor),

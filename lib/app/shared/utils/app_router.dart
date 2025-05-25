@@ -1,12 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/sign_up_page.dart';
 import '../../features/pharmacy/domain/entities/medication.dart';
-import '../../features/pharmacy/presentation/cubit/pharmacy_cubit.dart';
 import '../../features/pharmacy/presentation/pages/create_prescriptions_page.dart';
 import '../../features/pharmacy/presentation/pages/home_page.dart';
 import '../../features/pharmacy/presentation/pages/medication_details_page.dart';
@@ -14,7 +12,6 @@ import '../../features/pharmacy/presentation/pages/prescriptions_page.dart';
 import '../presentation/pages/error_page.dart';
 import '../presentation/pages/splash_page.dart';
 import '../presentation/widgets/custom_nav_bar.dart';
-import 'service_locator.dart';
 
 class AppRouter {
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -52,6 +49,47 @@ class AppRouter {
       ),
       ShellRoute(
         builder: (context, state, child) {
+          // Web navigation with NavigationRail
+          if (kIsWeb) {
+            return Scaffold(
+              body: Row(
+                children: [
+                  // Web navigation on the left
+                  NavigationRail(
+                    selectedIndex: _getSelectedIndex(context),
+                    onDestinationSelected: (index) {
+                      final route = _getRouteByIndex(index);
+                      if (route != null) {
+                        context.goNamed(route);
+                      }
+                    },
+                    labelType: NavigationRailLabelType.all,
+                    destinations: const [
+                      NavigationRailDestination(
+                        icon: Icon(Icons.home_outlined),
+                        selectedIcon: Icon(Icons.home),
+                        label: Text('Home'),
+                      ),
+                      NavigationRailDestination(
+                        icon: Icon(Icons.description_outlined),
+                        selectedIcon: Icon(Icons.description),
+                        label: Text('Prescriptions'),
+                      ),
+                      NavigationRailDestination(
+                        icon: Icon(Icons.add_outlined),
+                        selectedIcon: Icon(Icons.add),
+                        label: Text('Create'),
+                      ),
+                    ],
+                  ),
+                  const VerticalDivider(thickness: 1, width: 1),
+                  // Main content
+                  Expanded(child: child),
+                ],
+              ),
+            );
+          }
+          // Mobile navigation with bottom nav bar
           return Scaffold(
             body: child,
             bottomNavigationBar: kIsWeb ? null : const CustomBottomNavBar(),
@@ -82,10 +120,7 @@ class AppRouter {
             name: RouteConfig.homeRoute.name,
             pageBuilder: (context, state) {
               return _buildPage(
-                page: BlocProvider(
-                  create: (context) => locator<PharmacyCubit>(),
-                  child: HomePage(),
-                ),
+                page: HomePage(),
                 state: state,
                 isBottomNavPage: true,
               );
@@ -156,6 +191,27 @@ class AppRouter {
     const curve = Curves.ease;
     final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
     return SlideTransition(position: animation.drive(tween), child: child);
+  }
+
+  static int _getSelectedIndex(BuildContext context) {
+    final location = GoRouterState.of(context).matchedLocation;
+    if (location.startsWith(RouteConfig.homeRoute.path)) return 0;
+    if (location.startsWith(RouteConfig.prescriptionsRoute.path)) return 1;
+    if (location.startsWith(RouteConfig.createPrescriptionRoute.path)) return 2;
+    return 0;
+  }
+
+  static String? _getRouteByIndex(int index) {
+    switch (index) {
+      case 0:
+        return RouteConfig.homeRoute.name;
+      case 1:
+        return RouteConfig.prescriptionsRoute.name;
+      case 2:
+        return RouteConfig.createPrescriptionRoute.name;
+      default:
+        return null;
+    }
   }
 }
 

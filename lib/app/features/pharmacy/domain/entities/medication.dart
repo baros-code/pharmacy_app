@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../../../core/utils/string_ext.dart';
+
 class Medication extends Equatable {
   const Medication({
     required this.id,
@@ -24,6 +26,10 @@ class Medication extends Equatable {
   final String usage;
   final List<String> sideEffects;
   final String category;
+
+  String get fullLabel {
+    return '${name.capitalizeFirstLetter()} ($strength $dosageForm)';
+  }
 
   String get priceLabel {
     if (price == null) {

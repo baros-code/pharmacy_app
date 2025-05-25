@@ -18,6 +18,7 @@ class BasePage extends StatelessWidget {
     this.appBarbottom,
     this.bodyPadding,
     this.actions,
+    this.bottom,
     this.onBackButtonPressed,
     this.onCloseButtonPressed,
     this.onDismissed,
@@ -38,6 +39,7 @@ class BasePage extends StatelessWidget {
   final PreferredSizeWidget? appBarbottom;
   final EdgeInsets? bodyPadding;
   final List<Widget>? actions;
+  final Widget? bottom;
   final void Function()? onBackButtonPressed;
   final void Function()? onCloseButtonPressed;
   final void Function()? onDismissed;
@@ -56,12 +58,10 @@ class BasePage extends StatelessWidget {
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
       leadingWidth: 52,
-      leading: backButtonEnabled
-          ? _BackButton(
-              onBackButtonPressed,
-              onDismissed,
-            )
-          : null,
+      leading:
+          backButtonEnabled
+              ? _BackButton(onBackButtonPressed, onDismissed)
+              : null,
       backgroundColor: appBarBackgroundColor,
       automaticallyImplyLeading: false,
       title: IntrinsicWidth(child: title),
@@ -77,11 +77,7 @@ class BasePage extends StatelessWidget {
     return [
       if (actions != null) ...actions!,
       if (closeButtonEnabled) const SizedBox(width: 16),
-      if (closeButtonEnabled)
-        _CloseButton(
-          onCloseButtonPressed,
-          onDismissed,
-        ),
+      if (closeButtonEnabled) _CloseButton(onCloseButtonPressed, onDismissed),
       const SizedBox(width: 16),
     ];
   }
@@ -105,18 +101,18 @@ class BasePage extends StatelessWidget {
                 child: body!,
               ),
             ),
+          if (body == null) const Spacer(),
+          if (bottom != null) _Bottom(bottom),
         ],
       ),
     );
   }
+
   // - Helpers
 }
 
 class _BackButton extends StatelessWidget {
-  const _BackButton(
-    this.onBackButtonPressed,
-    this.onDismissed,
-  );
+  const _BackButton(this.onBackButtonPressed, this.onDismissed);
 
   final void Function()? onBackButtonPressed;
   final void Function()? onDismissed;
@@ -142,14 +138,12 @@ class _BackButton extends StatelessWidget {
       onBackButtonPressed!.call();
     }
   }
+
   // - Helpers
 }
 
 class _CloseButton extends StatelessWidget {
-  const _CloseButton(
-    this.onCloseButtonPressed,
-    this.onDismissed,
-  );
+  const _CloseButton(this.onCloseButtonPressed, this.onDismissed);
 
   final void Function()? onCloseButtonPressed;
   final void Function()? onDismissed;
@@ -174,6 +168,7 @@ class _CloseButton extends StatelessWidget {
       onCloseButtonPressed!.call();
     }
   }
+
   // - Helpers
 }
 
@@ -202,6 +197,23 @@ class _PageBody extends StatelessWidget {
         color: backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
         padding: padding ?? EdgeInsets.zero,
         child: child,
+      ),
+    );
+  }
+}
+
+class _Bottom extends StatelessWidget {
+  const _Bottom(this.bottom);
+
+  final Widget? bottom;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Container(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        child: bottom,
       ),
     );
   }

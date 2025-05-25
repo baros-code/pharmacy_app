@@ -4,7 +4,7 @@ import '../utils/widget_ext.dart';
 class CustomCard extends StatelessWidget {
   const CustomCard({
     super.key,
-    this.child,
+    required this.child,
     this.width,
     this.height,
     this.constraints,
@@ -14,12 +14,13 @@ class CustomCard extends StatelessWidget {
     this.borderColor,
     this.shadowColor,
     this.showBorder = false,
+    this.showArrowIcon = false,
     this.shape,
-    this.padding = const EdgeInsets.all(20),
+    this.padding = const EdgeInsets.all(16),
     this.onTap,
   });
 
-  final Widget? child;
+  final Widget child;
   final double? width;
   final double? height;
   final BoxConstraints? constraints;
@@ -29,6 +30,7 @@ class CustomCard extends StatelessWidget {
   final Color? borderColor;
   final Color? shadowColor;
   final bool showBorder;
+  final bool showArrowIcon;
   final ShapeBorder? shape;
   final EdgeInsets padding;
   final void Function()? onTap;
@@ -43,7 +45,19 @@ class CustomCard extends StatelessWidget {
         constraints: constraints,
         padding: padding,
         decoration: _buildDecoration(context),
-        child: child,
+        child:
+            showArrowIcon
+                ? Row(
+                  children: [
+                    child!,
+                    const Spacer(),
+                    Icon(
+                      Icons.chevron_right,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ],
+                )
+                : child,
       ).bordered(
         isEnabled: showBorder,
         borderColor: borderColor ?? Theme.of(context).shadowColor,

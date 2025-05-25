@@ -24,7 +24,6 @@ class HomeController extends Controller<Object> {
   void onStart() async {
     super.onStart();
     _pharmacyCubit = context.read<PharmacyCubit>()..stream.listen(_handleState);
-    _pharmacyCubit.fetchMedications();
   }
 
   void _handleState(PharmacyState state) {

@@ -28,3 +28,54 @@ class MedicationsFetchFailure extends PharmacyState {
   @override
   List<Object> get props => [error];
 }
+
+class PrescriptionsLoading extends PharmacyState {}
+
+class PrescriptionsFetched extends PharmacyState {
+  const PrescriptionsFetched(this.prescriptions);
+
+  final List<Prescription> prescriptions;
+
+  @override
+  List<Object> get props => [prescriptions];
+}
+
+class PrescriptionsFetchFailure extends PharmacyState {
+  const PrescriptionsFetchFailure(this.error);
+
+  final String error;
+
+  @override
+  List<Object> get props => [error];
+}
+
+class PrescriptionCreating extends PharmacyState {}
+
+class PrescriptionCreated extends PharmacyState {}
+
+class PrescriptionCreationFailure extends PharmacyState {
+  const PrescriptionCreationFailure(this.error);
+
+  final String error;
+
+  @override
+  List<Object> get props => [error];
+}
+
+class MedicationsSelected extends PharmacyState {
+  const MedicationsSelected(this.selectedMedications);
+
+  final List<Medication> selectedMedications;
+
+  @override
+  List<Object> get props => [selectedMedications];
+}
+
+class IssueDateSelected extends PharmacyState {
+  const IssueDateSelected(this.issueDate);
+
+  final DateTime issueDate;
+
+  @override
+  List<Object> get props => [issueDate];
+}

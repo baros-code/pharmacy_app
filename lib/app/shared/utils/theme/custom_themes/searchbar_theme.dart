@@ -4,10 +4,10 @@ class TSearchBarTheme {
   TSearchBarTheme._();
 
   static final lightSearchBarTheme = SearchBarThemeData(
-    backgroundColor: WidgetStatePropertyAll(Colors.green),
+    backgroundColor: WidgetStatePropertyAll(Colors.white),
   );
 
   static final darkSearchBarTheme = SearchBarThemeData(
-    backgroundColor: WidgetStatePropertyAll(Colors.green),
+    backgroundColor: WidgetStatePropertyAll(Colors.white),
   );
 }

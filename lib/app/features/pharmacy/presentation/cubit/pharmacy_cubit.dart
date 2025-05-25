@@ -2,14 +2,23 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../domain/entities/medication.dart';
+import '../../domain/entities/prescription.dart';
+import '../../domain/use_cases/create_prescription.dart';
 import '../../domain/use_cases/fetch_medications.dart';
+import '../../domain/use_cases/fetch_prescriptions.dart';
 
 part 'pharmacy_state.dart';
 
 class PharmacyCubit extends Cubit<PharmacyState> {
-  PharmacyCubit(this._fetchMedications) : super(PharmacyInitial());
+  PharmacyCubit(
+    this._fetchMedications,
+    this._createPrescription,
+    this._fetchPrescriptions,
+  ) : super(PharmacyInitial());
 
   final FetchMedications _fetchMedications;
+  final CreatePrescription _createPrescription;
+  final FetchPrescriptions _fetchPrescriptions;
 
   List<Medication> medications = [];
 
@@ -32,6 +41,48 @@ class PharmacyCubit extends Cubit<PharmacyState> {
       return;
     }
     emit(MedicationsFetchFailure(result.error!.message));
+  }
+
+  Future<void> fetchPrescriptions(String patientId) async {
+    emit(PrescriptionsLoading());
+    final result = await _fetchPrescriptions(params: patientId);
+    if (result.isSuccessful) {
+      emit(PrescriptionsFetched(result.value!));
+      return;
+    }
+    emit(PrescriptionsFetchFailure(result.error!.message));
+  }
+
+  Future<void> createPrescription({
+    required String patientId,
+    required List<String> medicationIds,
+    required String instructions,
+    required DateTime issueDate,
+    List<String>? attachments,
+  }) async {
+    emit(PrescriptionCreating());
+    final result = await _createPrescription(
+      params: CreatePrescriptionParams(
+        patientId: patientId,
+        medicationIds: medicationIds,
+        instructions: instructions,
+        issueDate: issueDate,
+        attachments: attachments,
+      ),
+    );
+    if (result.isSuccessful) {
+      emit(PrescriptionCreated());
+      return;
+    }
+    emit(PrescriptionCreationFailure(result.error!.message));
+  }
+
+  void medicationsSelected(List<Medication> selectedMedications) {
+    emit(MedicationsSelected(selectedMedications));
+  }
+
+  void issueDateSelected(DateTime issueDate) {
+    emit(IssueDateSelected(issueDate));
   }
 
   // Helpers

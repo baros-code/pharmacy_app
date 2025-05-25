@@ -39,6 +39,8 @@ class _SearchViewState extends State<SearchView> {
   void initState() {
     super.initState();
     _items = widget.items;
+    // Do the initial search with an empty string
+    _searchInItems(_currentSearchText);
   }
 
   @override
