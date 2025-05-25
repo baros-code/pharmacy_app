@@ -18,15 +18,16 @@ class CreatePrescriptionParams {
   const CreatePrescriptionParams({
     required this.patientId,
     required this.medicationIds,
-    required this.instructions,
     required this.issueDate,
+    this.instructions,
     this.attachments,
   });
 
   final String patientId;
   final List<String> medicationIds;
-  final String instructions;
+
   final DateTime issueDate;
+  final String? instructions;
   final List<String>? attachments;
 
   Map<String, dynamic> toJson() {

@@ -25,10 +25,18 @@ abstract class PopupManager {
 
   Future<void> showFullScreenPopup(BuildContext context, Widget content);
 
-  // void showScrollPicker(BuildContext context);
+  Future<DateTime?> showCustomDatePicker({
+    required BuildContext context,
+    required DateTime firstDate,
+    required DateTime lastDate,
+    DateTime? initialDate,
+    String? helpText,
+  });
 }
 
 class PopupManagerImpl implements PopupManager {
+  bool _isProgressShowing = false;
+
   @override
   Future<void> showPopup(
     BuildContext context,
@@ -73,32 +81,28 @@ class PopupManagerImpl implements PopupManager {
         );
       },
     );
-    // _showGeneralDialog(
-    //   context,
-    //   content,
-    //   alignment: alignment,
-    //   padding: padding,
-    //   preventClose: preventClose,
-    //   preventBackPress: preventBackPress,
-    //   barrierColor: barrierColor,
-    //   showFullScreen: false,
-    // );
   }
 
   @override
   void showProgress(BuildContext context) {
-    showPopup(
-      context,
-      const CircularProgressIndicator(),
-      padding: EdgeInsets.zero,
-      preventClose: true,
-      preventBackPress: true,
-    );
+    if (!_isProgressShowing) {
+      _isProgressShowing = true;
+      showPopup(
+        context,
+        const CircularProgressIndicator(),
+        padding: EdgeInsets.zero,
+        preventClose: true,
+        preventBackPress: true,
+      );
+    }
   }
 
   @override
   void hideProgress(BuildContext context) {
-    Navigator.of(context).pop();
+    if (_isProgressShowing) {
+      Navigator.of(context).pop();
+      _isProgressShowing = false;
+    }
   }
 
   @override
@@ -107,14 +111,17 @@ class PopupManagerImpl implements PopupManager {
     String text, {
     Duration duration = const Duration(milliseconds: 3200),
   }) {
-    FToast()
-      ..init(context)
-      ..removeQueuedCustomToasts()
-      ..showToast(
-        toastDuration: duration,
-        gravity: ToastGravity.CENTER,
-        child: ToastCard(text),
-      );
+    // Check if context is still valid
+    if (!context.mounted) return;
+
+    final fToast = FToast();
+    fToast.init(context);
+    fToast.removeQueuedCustomToasts();
+    fToast.showToast(
+      toastDuration: duration,
+      gravity: ToastGravity.CENTER,
+      child: ToastCard(text),
+    );
   }
 
   @override
@@ -145,6 +152,33 @@ class PopupManagerImpl implements PopupManager {
           ),
         );
       },
+    );
+  }
+
+  @override
+  Future<DateTime?> showCustomDatePicker({
+    required BuildContext context,
+    required DateTime firstDate,
+    required DateTime lastDate,
+    DateTime? initialDate,
+    String? helpText,
+  }) async {
+    return showDatePicker(
+      context: context,
+      initialDate: initialDate ?? DateTime.now(),
+      firstDate: firstDate,
+      lastDate: lastDate,
+      helpText: helpText,
+      builder:
+          (context, child) => Theme(
+            data: Theme.of(context).copyWith(
+              primaryColor: Theme.of(context).primaryColor,
+              colorScheme: ColorScheme.light(
+                primary: Theme.of(context).primaryColor,
+              ),
+            ),
+            child: child!,
+          ),
     );
   }
 }

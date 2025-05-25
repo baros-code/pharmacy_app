@@ -56,8 +56,8 @@ class PharmacyCubit extends Cubit<PharmacyState> {
   Future<void> createPrescription({
     required String patientId,
     required List<String> medicationIds,
-    required String instructions,
     required DateTime issueDate,
+    String? instructions,
     List<String>? attachments,
   }) async {
     emit(PrescriptionCreating());

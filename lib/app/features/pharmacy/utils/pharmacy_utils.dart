@@ -312,6 +312,7 @@ abstract class PharmacyUtils {
     final docRef = FirebaseFirestore.instance.collection('medications').doc(id);
 
     await docRef.set({
+      'id': id,
       'name': name,
       'strength': strength,
       'dosageForm': dosageForm,

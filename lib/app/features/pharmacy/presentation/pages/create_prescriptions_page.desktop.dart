@@ -93,12 +93,15 @@ class _MedicationSelectionCard extends SubView<CreatePrescriptionsController> {
                 medications.isEmpty
                     ? 'Select medications'
                     : '${medications.length} medication selected',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color:
-                      medications.isEmpty
-                          ? Theme.of(context).disabledColor
-                          : Theme.of(context).primaryColor,
-                ),
+                style:
+                    medications.isEmpty
+                        ? Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).disabledColor,
+                        )
+                        : Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold,
+                        ),
               ),
             ),
           ],
@@ -138,12 +141,15 @@ class _IssueDatePicker extends SubView<CreatePrescriptionsController> {
                 issueDate == null
                     ? 'Select issue date'
                     : issueDate.formatDefault(),
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color:
-                      issueDate == null
-                          ? Theme.of(context).disabledColor
-                          : Theme.of(context).primaryColor,
-                ),
+                style:
+                    issueDate == null
+                        ? Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).disabledColor,
+                        )
+                        : Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold,
+                        ),
               ),
             ),
           ],
@@ -215,17 +221,34 @@ class _Bottom extends SubView<CreatePrescriptionsController> {
     BuildContext context,
     CreatePrescriptionsController controller,
   ) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        vertical: 16,
-        horizontal: screenWidth * 0.2,
-      ),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(fixedSize: Size(double.infinity, 64)),
-        onPressed: controller.createPrescription,
-        child: const Text('Create prescription'),
-      ),
+    return BlocBuilder<PharmacyCubit, PharmacyState>(
+      buildWhen:
+          (previous, current) =>
+              current is PrescriptionCreating ||
+              current is PrescriptionCreationFailure ||
+              current is PrescriptionCreated,
+      builder: (context, state) {
+        final screenWidth = MediaQuery.of(context).size.width;
+        return Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: 16,
+            horizontal: screenWidth * 0.2,
+          ),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              fixedSize: Size(double.infinity, 64),
+            ),
+            onPressed: controller.createPrescription,
+            child:
+                state is PrescriptionCreating
+                    ? CircularProgressIndicator(
+                      color: Theme.of(context).primaryColorLight,
+                      constraints: BoxConstraints.tight(Size.square(24)),
+                    )
+                    : Text('Create prescription'),
+          ),
+        );
+      },
     );
   }
 }

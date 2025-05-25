@@ -16,12 +16,15 @@ class AuthCubit extends Cubit<AuthState> {
   final Login _login;
   final LoginWithGoogle _loginWithGoogle;
 
+  User? userCache;
+
   void signUp(String email, String password) async {
     emit(SignUpLoading());
     final result = await _signUp(
       params: AuthParams(email: email, password: password),
     );
     if (result.isSuccessful) {
+      userCache = result.value;
       emit(SignUpSuccess(result.value!));
       return;
     }
@@ -34,6 +37,7 @@ class AuthCubit extends Cubit<AuthState> {
       params: AuthParams(email: email, password: password),
     );
     if (result.isSuccessful) {
+      userCache = result.value;
       emit(LoginSuccess(result.value!));
       return;
     }
@@ -44,6 +48,7 @@ class AuthCubit extends Cubit<AuthState> {
     emit(LoginLoading());
     final result = await _loginWithGoogle();
     if (result.isSuccessful) {
+      userCache = result.value;
       emit(LoginSuccess(result.value!));
       return;
     }
