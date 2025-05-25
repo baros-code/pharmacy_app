@@ -72,10 +72,16 @@ class PharmacyRemoteServiceImpl implements PharmacyRemoteService {
               .collection('prescriptions')
               .where('patientId', isEqualTo: patientId)
               .get();
+
       final prescriptions =
-          snapshot.docs
-              .map((doc) => PrescriptionModel.fromJson(doc.data()))
-              .toList();
+          snapshot.docs.map((doc) {
+            // Create model from data
+            var model = PrescriptionModel.fromJson(doc.data());
+            // Set the document ID as the model ID
+            model = model.copyWith(id: doc.id);
+            return model;
+          }).toList();
+
       return Result.success(value: prescriptions);
     } catch (e) {
       return Result.failure(Failure(message: e.toString()));

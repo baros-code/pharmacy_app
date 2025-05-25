@@ -24,6 +24,8 @@ class PharmacyCubit extends Cubit<PharmacyState> {
 
   List<String> categories = [];
 
+  List<Prescription> prescriptions = [];
+
   bool isFirstFetch = true;
 
   Future<void> fetchMedications({String? name}) async {
@@ -47,6 +49,7 @@ class PharmacyCubit extends Cubit<PharmacyState> {
     emit(PrescriptionsLoading());
     final result = await _fetchPrescriptions(params: patientId);
     if (result.isSuccessful) {
+      prescriptions = result.value!;
       emit(PrescriptionsFetched(result.value!));
       return;
     }

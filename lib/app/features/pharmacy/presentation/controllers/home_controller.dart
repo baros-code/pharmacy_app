@@ -28,7 +28,10 @@ class HomeController extends Controller<Object> {
 
   void _handleState(PharmacyState state) {
     if (state is MedicationsFetchFailure) {
-      popupManager.showToastMessage(context, state.error);
+      popupManager.showToastMessage(
+        context,
+        'Failed to fetch medications, please try again.',
+      );
     }
   }
 

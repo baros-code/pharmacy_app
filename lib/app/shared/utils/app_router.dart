@@ -5,9 +5,11 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/sign_up_page.dart';
 import '../../features/pharmacy/domain/entities/medication.dart';
+import '../../features/pharmacy/domain/entities/prescription.dart';
 import '../../features/pharmacy/presentation/pages/create_prescriptions_page.dart';
 import '../../features/pharmacy/presentation/pages/home_page.dart';
 import '../../features/pharmacy/presentation/pages/medication_details_page.dart';
+import '../../features/pharmacy/presentation/pages/prescription_details_page.dart';
 import '../../features/pharmacy/presentation/pages/prescriptions_page.dart';
 import '../presentation/pages/error_page.dart';
 import '../presentation/pages/splash_page.dart';
@@ -160,6 +162,19 @@ class AppRouter {
                 isBottomNavPage: true,
               );
             },
+            routes: [
+              GoRoute(
+                path: RouteConfig.prescriptionDetailsRoute.path,
+                name: RouteConfig.prescriptionDetailsRoute.name,
+                pageBuilder: (context, state) {
+                  final prescription = state.extra as Prescription;
+                  return _buildPage(
+                    page: PrescriptionDetailsPage(prescription),
+                    state: state,
+                  );
+                },
+              ),
+            ],
           ),
         ],
       ),
@@ -222,7 +237,8 @@ enum RouteConfig {
   homeRoute('/home'),
   medicationDetailsRoute('/medication-details'),
   prescriptionsRoute('/prescriptions'),
-  createPrescriptionRoute('/create-prescription');
+  createPrescriptionRoute('/create-prescription'),
+  prescriptionDetailsRoute('/prescription-details');
 
   const RouteConfig(this.path);
 

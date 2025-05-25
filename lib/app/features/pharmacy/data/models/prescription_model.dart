@@ -48,4 +48,22 @@ class PrescriptionModel {
       attachments: attachments ?? [],
     );
   }
+
+  PrescriptionModel copyWith({
+    String? id,
+    String? patientId,
+    List<String>? medicationIds,
+    String? additionalNotes,
+    DateTime? issueDate,
+    List<String>? attachments,
+  }) {
+    return PrescriptionModel(
+      id: id ?? this.id,
+      patientId: patientId ?? this.patientId,
+      medicationIds: medicationIds ?? this.medicationIds,
+      additionalNotes: additionalNotes ?? this.additionalNotes,
+      issueDate: issueDate ?? this.issueDate,
+      attachments: attachments ?? this.attachments,
+    );
+  }
 }

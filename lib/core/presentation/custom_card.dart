@@ -49,8 +49,7 @@ class CustomCard extends StatelessWidget {
             showArrowIcon
                 ? Row(
                   children: [
-                    child!,
-                    const Spacer(),
+                    Expanded(child: child),
                     Icon(
                       Icons.chevron_right,
                       color: Theme.of(context).primaryColor,

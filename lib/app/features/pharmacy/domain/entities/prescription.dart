@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../../../core/utils/string_ext.dart';
+
 class Prescription extends Equatable {
   const Prescription({
     required this.id,
@@ -16,6 +18,12 @@ class Prescription extends Equatable {
   final String additionalNotes;
   final DateTime? issueDate;
   final List<String> attachments;
+
+  String get medicationNames {
+    return medicationIds
+        .map((e) => e.split('_').first.capitalizeFirstLetter())
+        .join(', ');
+  }
 
   String get formattedIssueDate {
     if (issueDate == null) return 'No issue date';
