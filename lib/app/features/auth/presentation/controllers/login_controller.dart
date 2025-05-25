@@ -7,7 +7,6 @@ import '../../../../../core/presentation/controller.dart';
 import '../../../../shared/utils/app_router.dart';
 import '../cubit/auth_cubit.dart';
 
-// TODO(Baran): Implement bypass login when user already logged in.
 class LoginController extends Controller<Object> {
   LoginController(super.logger, super.popupManager);
 
@@ -32,15 +31,21 @@ class LoginController extends Controller<Object> {
 
   void handleAuthStates(AuthState state) {
     if (state is LoginLoading) {
-      popupManager.showProgress(context);
+      if (context.mounted) {
+        popupManager.showProgress(context);
+      }
     }
     if (state is LoginSuccess) {
-      context.goNamed(RouteConfig.homeRoute.name);
-      popupManager.hideProgress(context);
+      if (context.mounted) {
+        context.goNamed(RouteConfig.homeRoute.name);
+        popupManager.hideProgress(context);
+      }
     }
     if (state is LoginFailure) {
-      popupManager.showToastMessage(context, state.error);
-      popupManager.hideProgress(context);
+      if (context.mounted) {
+        popupManager.showToastMessage(context, state.error);
+        popupManager.hideProgress(context);
+      }
     }
   }
 

@@ -17,7 +17,16 @@ class HomePageMobile extends ControlledView<HomeController, Object> {
 
   @override
   Widget build(BuildContext context) {
-    return BasePage(title: _Title(), body: _Body());
+    return BasePage(
+      title: _Title(),
+      actions: [
+        IconButton(
+          icon: Icon(Icons.logout, color: Theme.of(context).primaryColor),
+          onPressed: controller.logout,
+        ),
+      ],
+      body: _Body(),
+    );
   }
 }
 
@@ -36,6 +45,7 @@ class _Body extends SubView<HomeController> {
     return BlocBuilder<PharmacyCubit, PharmacyState>(
       buildWhen:
           (previous, current) =>
+              current is MedicationsCategorySelected ||
               current is MedicationsFetched ||
               current is MedicationsLoading ||
               current is MedicationsFetchFailure,
@@ -45,6 +55,7 @@ class _Body extends SubView<HomeController> {
                 ? state.medications
                 : controller.medications;
         return SearchView(
+          initialSearchText: controller.currentSearchQuery,
           padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
           enableShadows: true,
           searchBarHintText: 'Search for medications',
@@ -61,6 +72,12 @@ class _Body extends SubView<HomeController> {
                               .where((e1) => e1.category == category)
                               .map((e2) => _createSearchItem(e2, controller))
                               .toList(),
+                      onToggle:
+                          (isSelected) => controller.onCategoryToggleChanged(
+                            category,
+                            isSelected,
+                          ),
+                      isSelected: controller.selectedCategory == category,
                     ),
                   )
                   .toList(),

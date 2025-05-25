@@ -12,9 +12,7 @@ class SignUpSuccess extends AuthState {
   final User user;
 }
 
-class SignUpLoading extends AuthState {
-  const SignUpLoading();
-}
+class SignUpLoading extends AuthState {}
 
 class SignUpFailure extends AuthState {
   const SignUpFailure(this.error);
@@ -22,9 +20,7 @@ class SignUpFailure extends AuthState {
   final String error;
 }
 
-class LoginLoading extends AuthState {
-  const LoginLoading();
-}
+class LoginLoading extends AuthState {}
 
 class LoginSuccess extends AuthState {
   const LoginSuccess(this.user);
@@ -34,6 +30,16 @@ class LoginSuccess extends AuthState {
 
 class LoginFailure extends AuthState {
   const LoginFailure(this.error);
+
+  final String error;
+}
+
+class LogoutLoading extends AuthState {}
+
+class LogoutSuccess extends AuthState {}
+
+class LogoutFailure extends AuthState {
+  const LogoutFailure(this.error);
 
   final String error;
 }

@@ -7,6 +7,7 @@ import '../../../core/utils/widget_ext.dart';
 class SearchView extends StatefulWidget {
   const SearchView({
     super.key,
+    this.initialSearchText,
     required this.items,
     this.toggleItems,
     required this.searchBarHintText,
@@ -16,6 +17,7 @@ class SearchView extends StatefulWidget {
     this.onSearchTextChanged,
   });
 
+  final String? initialSearchText;
   final List<SearchItem> items;
   final List<ToggleItem>? toggleItems;
   final String searchBarHintText;
@@ -30,6 +32,7 @@ class SearchView extends StatefulWidget {
 
 class _SearchViewState extends State<SearchView> {
   late List<SearchItem> _items;
+  final TextEditingController _searchController = TextEditingController();
   String _currentSearchText = '';
   bool _isSearching = false;
 
@@ -39,8 +42,12 @@ class _SearchViewState extends State<SearchView> {
   void initState() {
     super.initState();
     _items = widget.items;
-    // Do the initial search with an empty string
-    _searchInItems(_currentSearchText);
+    _updateSearchText();
+    _applyToggleFiltering();
+    // If items are empty, we search immediately to show the initial state
+    if (_items.isEmpty) {
+      _searchInItems(_currentSearchText);
+    }
   }
 
   @override
@@ -49,6 +56,8 @@ class _SearchViewState extends State<SearchView> {
     if (oldWidget.items != widget.items) {
       _items = widget.items;
     }
+    _updateSearchText();
+    _applyToggleFiltering();
   }
 
   @override
@@ -77,6 +86,7 @@ class _SearchViewState extends State<SearchView> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               SearchBar(
+                controller: _searchController,
                 backgroundColor: WidgetStateProperty.all(
                   Theme.of(context).primaryColorLight,
                 ),
@@ -110,11 +120,13 @@ class _SearchViewState extends State<SearchView> {
                       onItemSelected: (item) {
                         setState(() {
                           _items = item.itemsOnSelection;
+                          item.onToggle?.call(true);
                         });
                       },
-                      onSelectionCleared: () {
+                      onSelectionCleared: (item) {
                         setState(() {
                           _items = widget.items;
+                          item.onToggle?.call(false);
                         });
                       },
                     ),
@@ -181,6 +193,24 @@ class _SearchViewState extends State<SearchView> {
             );
           }
         });
+      }
+    }
+  }
+
+  void _updateSearchText() {
+    if (widget.initialSearchText != null) {
+      _currentSearchText = widget.initialSearchText!;
+      _searchController.text = _currentSearchText;
+    }
+  }
+
+  void _applyToggleFiltering() {
+    if (widget.toggleItems != null) {
+      for (final item in widget.toggleItems!) {
+        if (item.isSelected) {
+          _items = item.itemsOnSelection;
+          break;
+        }
       }
     }
   }
@@ -275,7 +305,7 @@ class _ToggleButtons extends StatefulWidget {
 
   final List<ToggleItem> items;
   final void Function(ToggleItem) onItemSelected;
-  final void Function() onSelectionCleared;
+  final void Function(ToggleItem) onSelectionCleared;
 
   @override
   State<_ToggleButtons> createState() => _ToggleButtonsState();
@@ -316,7 +346,7 @@ class _ToggleButtonsState extends State<_ToggleButtons> {
               e.value.isSelected = !e.value.isSelected;
               e.value.isSelected
                   ? widget.onItemSelected(e.value)
-                  : widget.onSelectionCleared();
+                  : widget.onSelectionCleared(e.value);
             } else {
               e.value.isSelected = false;
             }
@@ -373,10 +403,15 @@ class SearchItem {
 }
 
 class ToggleItem {
-  ToggleItem({required this.text, required this.itemsOnSelection})
-    : isSelected = false;
+  ToggleItem({
+    required this.text,
+    this.isSelected = false,
+    required this.itemsOnSelection,
+    this.onToggle,
+  });
 
   final String text;
-  final List<SearchItem> itemsOnSelection;
   bool isSelected;
+  final List<SearchItem> itemsOnSelection;
+  final void Function(bool)? onToggle;
 }

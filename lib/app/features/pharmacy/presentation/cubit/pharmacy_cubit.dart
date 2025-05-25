@@ -20,15 +20,17 @@ class PharmacyCubit extends Cubit<PharmacyState> {
   final CreatePrescription _createPrescription;
   final FetchPrescriptions _fetchPrescriptions;
 
+  String? currentSearchQuery;
+  String? selectedCategory;
+
   List<Medication> medications = [];
-
   List<String> categories = [];
-
   List<Prescription> prescriptions = [];
 
   bool isFirstFetch = true;
 
   Future<void> fetchMedications({String? name}) async {
+    currentSearchQuery = name;
     emit(MedicationsLoading());
     final result = await _fetchMedications(
       params: FetchMedicationsParams(name: name),
@@ -79,6 +81,10 @@ class PharmacyCubit extends Cubit<PharmacyState> {
       return;
     }
     emit(PrescriptionCreationFailure(result.error!.message));
+  }
+
+  void categorySelected(String? category) {
+    selectedCategory = category;
   }
 
   void medicationsSelected(List<Medication> selectedMedications) {

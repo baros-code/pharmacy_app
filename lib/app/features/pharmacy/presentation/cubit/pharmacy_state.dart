@@ -29,6 +29,15 @@ class MedicationsFetchFailure extends PharmacyState {
   List<Object> get props => [error];
 }
 
+class MedicationsCategorySelected extends PharmacyState {
+  const MedicationsCategorySelected(this.category);
+
+  final String category;
+
+  @override
+  List<Object> get props => [category];
+}
+
 class PrescriptionsLoading extends PharmacyState {}
 
 class PrescriptionsFetched extends PharmacyState {

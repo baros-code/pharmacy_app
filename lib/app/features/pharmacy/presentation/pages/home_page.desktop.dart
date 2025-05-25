@@ -17,7 +17,16 @@ class HomePageDesktop extends ControlledView<HomeController, Object> {
 
   @override
   Widget build(BuildContext context) {
-    return BasePage(title: _Title(), body: _Body());
+    return BasePage(
+      title: _Title(),
+      actions: [
+        IconButton(
+          icon: Icon(Icons.logout, color: Theme.of(context).primaryColor),
+          onPressed: controller.logout,
+        ),
+      ],
+      body: _Body(),
+    );
   }
 }
 

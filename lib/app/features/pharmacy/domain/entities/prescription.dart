@@ -23,7 +23,7 @@ class Prescription extends Equatable {
     return medicationIds
         .map(
           (e) =>
-              '${e.split('_')[0].capitalizeFirstLetter()} (${e.split('_')[1]} ${e.split('_')[2]})',
+              '''${e.split('_')[0].capitalizeFirstLetter()} (${e.split('_')[1]} ${e.split('_')[2]})''',
         )
         .join('\n');
   }

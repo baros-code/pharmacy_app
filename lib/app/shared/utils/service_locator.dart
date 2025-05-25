@@ -8,6 +8,7 @@ import '../../features/auth/data/services/auth_service.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/domain/use_cases/login.dart';
 import '../../features/auth/domain/use_cases/login_with_google.dart';
+import '../../features/auth/domain/use_cases/logout.dart';
 import '../../features/auth/domain/use_cases/sign_up.dart';
 import '../../features/auth/presentation/controllers/login_controller.dart';
 import '../../features/auth/presentation/controllers/sign_up_controller.dart';
@@ -59,6 +60,7 @@ abstract class ServiceLocator {
       ..registerLazySingleton(() => SignUp(locator(), locator()))
       ..registerLazySingleton(() => Login(locator(), locator()))
       ..registerLazySingleton(() => LoginWithGoogle(locator(), locator()))
+      ..registerLazySingleton(() => Logout(locator(), locator()))
       ..registerLazySingleton(() => FetchMedications(locator(), locator()))
       ..registerLazySingleton(() => CreatePrescription(locator(), locator()))
       ..registerLazySingleton(() => FetchPrescriptions(locator(), locator()));
@@ -80,7 +82,9 @@ abstract class ServiceLocator {
       );
 
     // Register cubits
-    locator.registerFactory(() => AuthCubit(locator(), locator(), locator()));
+    locator.registerFactory(
+      () => AuthCubit(locator(), locator(), locator(), locator()),
+    );
     locator.registerFactory(
       () => PharmacyCubit(locator(), locator(), locator()),
     );

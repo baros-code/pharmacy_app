@@ -7,12 +7,6 @@ import '../../../../../core/presentation/controller.dart';
 import '../../../../shared/utils/app_router.dart';
 import '../cubit/auth_cubit.dart';
 
-// TODO(Baran): Add email validation and password strength validation.
-// TODO(Baran): Add password confirmation validation.
-
-// TODO(Baran): Add email verification & resend email page.
-
-// TODO(Baran): Implement sign out.
 class SignUpController extends Controller<Object> {
   SignUpController(super.logger, super.popupManager);
 

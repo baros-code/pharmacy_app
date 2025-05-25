@@ -17,7 +17,6 @@ class PrescriptionsController extends Controller<Object> {
 
   @override
   void onStart() {
-    // TODO: implement onStart
     super.onStart();
     _authCubit = context.read<AuthCubit>();
     _pharmacyCubit =

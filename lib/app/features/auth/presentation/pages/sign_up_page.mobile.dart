@@ -7,7 +7,6 @@ import '../../../../shared/utils/build_context_ext.dart';
 import '../../../../shared/widgets/custom_text_form_field.dart';
 import '../controllers/sign_up_controller.dart';
 
-// TODO(Baran): Add user photo upload functionality.
 class SignUpPageMobile extends ControlledView<SignUpController, Object> {
   SignUpPageMobile({super.key, super.params});
 
