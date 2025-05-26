@@ -9,12 +9,6 @@ import '../../../../shared/utils/validation_utils.dart';
 import '../../../../shared/widgets/custom_text_form_field.dart';
 import '../controllers/login_controller.dart';
 
-
-
-   
-
-            
-
 class LoginPageMobile extends ControlledView<LoginController, Object> {
   LoginPageMobile({super.key, super.params});
 
@@ -56,8 +50,8 @@ class __BodyState extends State<_Body> {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Form(
-        autovalidateMode: AutovalidateMode.onUserInteraction,
         key: _formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

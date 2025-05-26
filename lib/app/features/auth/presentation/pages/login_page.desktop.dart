@@ -54,8 +54,8 @@ class __BodyState extends State<_Body> {
         vertical: screenHeight * 0.1,
       ),
       child: Form(
-        autovalidateMode: AutovalidateMode.onUserInteraction,
         key: _formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
