@@ -175,6 +175,7 @@ class CreatePrescriptionsController extends Controller<Object> {
       if (result.value == null) {
         return;
       }
+      selectedAttachments.clear();
       result.value is List<String>
           ? selectedAttachments.addAll(result.value as List<String>)
           : selectedAttachments.add(result.value as String);
