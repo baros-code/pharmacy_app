@@ -13,6 +13,8 @@ import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../domain/entities/medication.dart';
 import '../cubit/pharmacy_cubit.dart';
 
+// TODO(Baran): The attachments consist of local file paths,
+// but they should be uploaded to Firestore.
 class CreatePrescriptionsController extends Controller<Object> {
   CreatePrescriptionsController(
     super.logger,
