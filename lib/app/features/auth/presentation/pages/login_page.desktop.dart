@@ -2,10 +2,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../core/presentation/controlled_view.dart';
-import '../../../../../core/presentation/sub_view.dart';
 import '../../../../shared/presentation/pages/base_page.dart';
 import '../../../../shared/utils/asset_config.dart';
 import '../../../../shared/utils/build_context_ext.dart';
+import '../../../../shared/utils/validation_utils.dart';
 import '../../../../shared/widgets/custom_text_form_field.dart';
 import '../controllers/login_controller.dart';
 
@@ -14,7 +14,11 @@ class LoginPageDesktop extends ControlledView<LoginController, Object> {
 
   @override
   Widget build(BuildContext context) {
-    return BasePage(title: _Title(), body: _Body(), centerTitle: true);
+    return BasePage(
+      title: _Title(),
+      body: _Body(controller),
+      centerTitle: true,
+    );
   }
 }
 
@@ -27,18 +31,33 @@ class _Title extends StatelessWidget {
   }
 }
 
-class _Body extends SubView<LoginController> {
+class _Body extends StatefulWidget {
+  const _Body(this.controller);
+
+  final LoginController controller;
+
   @override
-  Widget buildView(BuildContext context, LoginController controller) {
-    final screenHeight = MediaQuery.of(context).size.height;
+  State<_Body> createState() => __BodyState();
+}
+
+class __BodyState extends State<_Body> {
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = widget.controller;
     final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: screenWidth * 0.35,
         vertical: screenHeight * 0.1,
       ),
-      child: Center(
+      child: Form(
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        key: _formKey,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Center(
               child: Text(
@@ -51,6 +70,7 @@ class _Body extends SubView<LoginController> {
               labelText: 'Email',
               hintText: 'Enter your email',
               onChanged: controller.setEmail,
+              validator: ValidationUtils.emailValidator,
             ),
             const SizedBox(height: 16),
             CustomTextFormField(
@@ -58,17 +78,19 @@ class _Body extends SubView<LoginController> {
               labelText: 'Password',
               hintText: 'Enter your password',
               onChanged: controller.setPassword,
+              validator: ValidationUtils.passwordValidator,
             ),
             const SizedBox(height: 16),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 minimumSize: Size(screenWidth * 0.5, 48),
               ),
-              onPressed: controller.login,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [const Text('Login')],
-              ),
+              onPressed: () {
+                if (_formKey.currentState?.validate() ?? false) {
+                  controller.login();
+                }
+              },
+              child: const Text('Login'),
             ),
             const SizedBox(height: 16),
             Row(

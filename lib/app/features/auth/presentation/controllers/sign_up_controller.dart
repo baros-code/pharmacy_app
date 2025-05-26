@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -17,10 +15,6 @@ class SignUpController extends Controller<Object> {
   String? email;
   String? password;
   String? confirmPassword;
-
-  final StreamController<bool> _signUpFieldsController = StreamController();
-
-  Stream<bool> get signUpFieldsStream => _signUpFieldsController.stream;
 
   @override
   void onStart() {
@@ -48,52 +42,35 @@ class SignUpController extends Controller<Object> {
 
   void setName(String value) {
     name = value;
-    _validateSignUp();
   }
 
   void setSurname(String value) {
     surname = value;
-    _validateSignUp();
   }
 
   void setEmail(String value) {
     email = value;
-    _validateSignUp();
   }
 
   void setPassword(String value) {
     password = value;
-    _validateSignUp();
   }
 
   void setConfirmPassword(String value) {
     confirmPassword = value;
-    _validateSignUp();
   }
 
   void signUp() {
     _authCubit.signUp(email!, password!);
   }
 
-  // Helpers
-  void _validateSignUp() {
-    if (name != null &&
-        surname != null &&
-        email != null &&
-        password != null &&
-        confirmPassword != null &&
-        (password == confirmPassword &&
-            email!.contains('@') &&
-            email!.contains('.') &&
-            password!.length >= 6 &&
-            confirmPassword!.length >= 6 &&
-            name!.isNotEmpty &&
-            surname!.isNotEmpty)) {
-      _signUpFieldsController.add(true);
-    } else {
-      _signUpFieldsController.add(false);
+  String? confirmPasswordValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please confirm your password';
     }
+    if (value != password) {
+      return 'Passwords do not match';
+    }
+    return null;
   }
-
-  // - Helpers
 }

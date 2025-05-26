@@ -5,16 +5,15 @@ class CustomTextFormField extends StatefulWidget {
     super.key,
     this.labelText,
     this.hintText,
-    this.enableValidation = false,
     this.obscureText = false,
+    this.validator,
     required this.onChanged,
   });
 
   final String? labelText;
   final String? hintText;
-  final bool enableValidation;
   final bool obscureText;
-
+  final String? Function(String?)? validator;
   final void Function(String) onChanged;
 
   @override
@@ -22,52 +21,41 @@ class CustomTextFormField extends StatefulWidget {
 }
 
 class _CustomTextFormFieldState extends State<CustomTextFormField> {
-  final _formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      child: TextFormField(
-        validator: (value) {
-          if ((value == null || value.isEmpty) && widget.enableValidation) {
-            return 'Please enter some text';
-          }
-          return null;
-        },
-        decoration: InputDecoration(
-          labelText: widget.labelText,
-          hintText: widget.hintText,
-          labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Theme.of(context).disabledColor,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: Theme.of(context).primaryColor),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(
-              color: Theme.of(context).primaryColor,
-              width: 2,
-            ),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: Theme.of(context).highlightColor),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: Theme.of(context).highlightColor),
+    return TextFormField(
+      validator: widget.validator,
+      decoration: InputDecoration(
+        labelText: widget.labelText,
+        hintText: widget.hintText,
+        labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+          color: Theme.of(context).disabledColor,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: Theme.of(context).primaryColor),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(
+            color: Theme.of(context).primaryColor,
+            width: 2,
           ),
         ),
-        obscureText: widget.obscureText,
-        onTapOutside: (_) {
-          FocusScope.of(context).unfocus();
-        },
-        onChanged: widget.onChanged,
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: Theme.of(context).highlightColor),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: Theme.of(context).highlightColor),
+        ),
       ),
+      obscureText: widget.obscureText,
+      onTapOutside: (_) {
+        FocusScope.of(context).unfocus();
+      },
+      onChanged: widget.onChanged,
     );
   }
 }
