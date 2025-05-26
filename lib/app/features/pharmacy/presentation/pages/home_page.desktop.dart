@@ -45,6 +45,7 @@ class _Body extends SubView<HomeController> {
     return BlocBuilder<PharmacyCubit, PharmacyState>(
       buildWhen:
           (previous, current) =>
+              current is MedicationsCategorySelected ||
               current is MedicationsFetched ||
               current is MedicationsLoading ||
               current is MedicationsFetchFailure,
@@ -54,10 +55,11 @@ class _Body extends SubView<HomeController> {
                 ? state.medications
                 : controller.medications;
         return SearchView(
-          padding: const EdgeInsets.all(8),
+          initialSearchText: controller.currentSearchQuery,
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
           enableShadows: true,
           searchBarHintText: 'Search for medications',
-          itemPadding: EdgeInsets.only(bottom: 16),
+          itemPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           items:
               medications.map((e) => _createSearchItem(e, controller)).toList(),
           toggleItems:
@@ -70,6 +72,12 @@ class _Body extends SubView<HomeController> {
                               .where((e1) => e1.category == category)
                               .map((e2) => _createSearchItem(e2, controller))
                               .toList(),
+                      onToggle:
+                          (isSelected) => controller.onCategoryToggleChanged(
+                            category,
+                            isSelected,
+                          ),
+                      isSelected: controller.selectedCategory == category,
                     ),
                   )
                   .toList(),
